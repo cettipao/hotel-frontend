@@ -1,0 +1,61 @@
+.HotelCard {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+}
+
+.eachCard {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 2px 4px 2px ;
+    border-radius: 20px;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    position: relative;
+    width: 270px;
+    background-color: rgb(105, 125, 238);
+    color: #20332d;
+    font-weight: 800;
+}
+
+img {
+    height: 250px;
+    width: 250px;
+    border-radius: 5%;
+}
+
+.dateDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.datePicker {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 14%;
+}
+
+.datePickerSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dateButton {
+    background-color: rgb(206, 210, 231);
+    margin-top: 1%;
+    margin-bottom: 2%;
+}
+
+input {
+    text-align: center;
+}
+
+.nombreHotel {
+    font-weight: bold;
+}

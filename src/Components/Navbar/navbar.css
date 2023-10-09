@@ -1,0 +1,10 @@
+nav {
+    width: 100%;
+    padding: 1%;
+    padding-right: 2%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    background-color: rgb(47, 71, 211);
+    justify-content: space-evenly;
+}
