@@ -5,7 +5,7 @@ import { BASE_URL } from "../configs";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-const infoHotel = `${BASE_URL}/hotels`;
+const infoHotel = `${BASE_URL}/hotel`;
 
 const Hotels = ({startDate, endDate}) => {
   const navigate = useNavigate();

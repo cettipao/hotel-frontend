@@ -15,20 +15,20 @@ const formatDate = (date) => {
 
 const DatePicker = () => {
   const navigate = useNavigate();
-  // const [hotels, setHotels] = useState([]);
-  const [hotelsShow, setHotelsShow] = useState([]);
-  // const [hotelAvailability, setHotelAvailability] = useState({});
+  const [selectedCity, setSelectedCity] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [hotelsShow, setHotelsShow] = useState([]);
+  const cities = ["Rio Cuarto", "city", "Carlos Paz"];
 
-  console.log(startDate, endDate);
+  //console.log(startDate, endDate);
 
   const handleSubmit = async () => {
     try {
-      if (!startDate || !endDate) {
+      if (!selectedCity || !startDate || !endDate) {
         Swal.fire({
           title: "Error",
-          text: "Por favor, selecciona ambas fechas",
+          text: "Por favor, selecciona ciudad y ambas fechas",
           icon: "error",
           showClass: {
             popup: "animate__animated animate__fadeInDown",
@@ -49,9 +49,8 @@ const DatePicker = () => {
         return;
       }
 
-      const hotelsResponse = await fetch(`${BASE_URL}/hotels`);
+      const hotelsResponse = await fetch(`${BASE_URL}/hotels/${selectedCity}`);
       const hotelsData = await hotelsResponse.json();
-      // setHotels(hotelsData);
       console.log(hotelsData);
 
       const filteredHotels = [];
@@ -60,45 +59,16 @@ const DatePicker = () => {
       for (const key of keys) {
         const hotel = hotelsData[key];
         for (const hotelA of hotel) {
-          const hotelID = hotelA.id;
+          const hotel = hotelA.id;
           const availabilityResponse = await fetch(
-            `${BASE_URL}/booking/no-availability/${hotelID}/${formatDate(
-              startDate
-            )}/${formatDate(endDate)}`
+            `${BASE_URL}/availability/${formatDate(startDate)}/${formatDate(endDate)}/${selectedCity}`
           );
           const isAvailable = await availabilityResponse.json();
 
           if (isAvailable) {
-            filteredHotels.push(hotelA);
+            filteredHotels.push(hotel);
           }
 
-          // if (availabilityData != null) {
-          //   const startDateComp = new Date(startDate);
-          //   const endDateComp = new Date(endDate);
-          //   let isAvailable = true;
-          //   for (const date of availabilityData) {
-          //     let countdata = 0;
-          //     const unavailableDate = new Date(date);
-          //     if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
-          //       for (const dateNo of availabilityData) {
-          //         const unavailableDate = new Date(dateNo);
-          //         if (unavailableDate >= startDateComp && unavailableDate <= endDateComp) {
-          //           countdata++;
-          //         }
-          //         if (countdata-1 > hotelA.rooms) {
-          //           isAvailable = false;
-          //           break;
-          //         }
-          //       }
-          //     }
-          //   }
-
-          //   if (isAvailable) {
-          //     filteredHotels.push(hotelA);
-          //   }
-          // } else {
-          //   filteredHotels.push(hotelA);
-          // }
         }
         setHotelsShow(filteredHotels);
       }
@@ -147,10 +117,29 @@ const DatePicker = () => {
           <label htmlFor="end-date">Fecha Hasta</label>
           <input type="text" id="end-date" className="end-datepicker" />
         </section>
+
+        <section className="citySelection">
+          <label htmlFor="city">Ciudad</label>
+          <select
+           id="city"
+           value={selectedCity}
+           className="browser-default"
+           onChange={(e) => setSelectedCity(e.target.value)}
+          >
+          <option value=""></option>
+            {cities.map((city, index) => (
+             <option key={index} value={city}>
+               {city}
+             </option>
+            ))}
+          </select>
+        </section>
       </section>
+
       <button onClick={handleSubmit} className="dateButton">
         Enviar fechas
       </button>
+
       <div className="SeccionHoteles">
         <h2>Hoteles en las fechas seleccionadas:</h2>
         <div className="HotelCard">

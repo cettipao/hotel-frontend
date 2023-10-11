@@ -9,23 +9,25 @@ import * as yup from "yup";
 export function Register() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [userName, setUserName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [state] = useState(true);
   const { handleRegister } = useContext(AuthContext);
 
   const validationSchema = yup.object().shape({
-    password: yup.string().min(8, "La contraseña debe tener al menos 8 caracteres").required("Ingrese una contraseña"),
-    email: yup.string().email("Ingrese un email válido").required("Ingrese un email"),
-    userName: yup.string().min(5, "El nombre de usuario debe tener al menos 5 caracteres").required("Ingrese un nombre de usuario"),
+    password: yup
+      .string()
+      .min(8, "La contraseña debe tener al menos 8 caracteres")
+      .required("Ingrese una contraseña"),
+    email: yup
+      .string()
+      .email("Ingrese un email válido")
+      .required("Ingrese un email"),
   });
 
   const [errors, setErrors] = useState({
     password: "",
     email: "",
-    userName: "",
   });
 
   const validateField = async (fieldName, value) => {
@@ -49,20 +51,17 @@ export function Register() {
       await validationSchema.validate({
         password,
         email,
-        userName,
       });
 
       // Validar el correo electrónico
       const isPSTVEmail = email.endsWith("@pstv.com");
-      const rol = isPSTVEmail ? true : false; // Asignar el rol de administrador si es un correo de "@pstv.com"
+      const admin = isPSTVEmail ? true : false; // Asignar el admin de administrador si es un correo de "@pstv.com"
       const isRegistered = await handleRegister(
-        userName,
         password,
         email,
         name,
-        rol,
-        lastName,
-        state === true
+        admin,
+        lastName
       );
 
       if (isRegistered) {
@@ -108,7 +107,7 @@ export function Register() {
         gap: "20px",
       }}
     >
-      <Typography variant="h2">Registro</Typography>
+      <Typography variant="h2">CHAU</Typography>
       <TextField
         type="text"
         label="Name"
@@ -124,30 +123,6 @@ export function Register() {
         onChange={(event) => setLastName(event.target.value)}
       />
       <TextField
-        type="password"
-        label="Password"
-        placeholder="Ingrese su contraseña"
-        value={password}
-        onChange={(event) => {
-          setPassword(event.target.value);
-          validateField("password", event.target.value);
-        }}
-        error={!!errors.password}
-        helperText={errors.password}
-      />
-      <TextField
-        type="text"
-        label="Usuario"
-        placeholder="Ingrese su usuario"
-        value={userName}
-        onChange={(event) => {
-          setUserName(event.target.value);
-          validateField("userName", event.target.value);
-        }}
-        error={!!errors.userName}
-        helperText={errors.userName}
-      />
-      <TextField
         type="email"
         label="Email"
         placeholder="Ingrese su email"
@@ -159,7 +134,21 @@ export function Register() {
         error={!!errors.email}
         helperText={errors.email}
       />
-      <Button variant="contained" onClick={onRegister}>Registrarse</Button>
+      <TextField
+        type="password"
+        label="Password"
+        placeholder="Ingrese su contraseña"
+        value={password}
+        onChange={(event) => {
+          setPassword(event.target.value);
+          validateField("password", event.target.value);
+        }}
+        error={!!errors.password}
+        helperText={errors.password}
+      />
+      <Button variant="contained" onClick={onRegister}>
+        Registrarse
+      </Button>
     </Box>
   );
 }
