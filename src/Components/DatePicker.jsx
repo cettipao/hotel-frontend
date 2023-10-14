@@ -51,8 +51,7 @@ const DatePicker = () => {
 
       const hotelsResponse = await fetch(`${BASE_URL}/hotels/${selectedCity}`);
       const hotelsData = await hotelsResponse.json();
-      console.log(hotelsData);
-
+      
       const filteredHotels = [];
 
       const keys = Object.keys(hotelsData);
@@ -71,6 +70,7 @@ const DatePicker = () => {
 
         }
         setHotelsShow(filteredHotels);
+        console.log(hotelsData);
       }
     } catch (error) {
       console.error("Error al obtener los hoteles o la disponibilidad:", error);
@@ -105,6 +105,8 @@ const DatePicker = () => {
       window.M.Datepicker.getInstance(endPicker).destroy();
     };
   }, []);
+
+
 
   return (
     <div className="dateDiv">
@@ -144,11 +146,11 @@ const DatePicker = () => {
         <h2>Hoteles en las fechas seleccionadas:</h2>
         <div className="HotelCard">
           {hotelsShow.length ? (
-            hotelsShow.map((hotel) => (
+            hotelsShow.map((hotel, index) => (
               <Card
-                key={hotel.id}
-                name={hotel.name}
+                key={index}
                 hotelId={hotel.id}
+                name={hotel.name}
                 onClick={() =>
                   navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)
                 }
