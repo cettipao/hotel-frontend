@@ -52,26 +52,32 @@ const DatePicker = () => {
       const hotelsResponse = await fetch(`${BASE_URL}/hotels/${selectedCity}`);
       const hotelsData = await hotelsResponse.json();
       
-      const filteredHotels = [];
-
       const keys = Object.keys(hotelsData);
+      const filteredHotels = [];
+      
       for (const key of keys) {
-        const hotel = hotelsData[key];
-        for (const hotelA of hotel) {
-          const hotel = hotelA.id;
-          const availabilityResponse = await fetch(
-            `${BASE_URL}/availability/${formatDate(startDate)}/${formatDate(endDate)}/${selectedCity}`
-          );
-          const isAvailable = await availabilityResponse.json();
-
-          if (isAvailable) {
-            filteredHotels.push(hotel);
+        const hotelArray = hotelsData[key];
+        
+        for (const hotel of hotelArray) {
+          // Hay que cambiar de false a true, solo lo deje porque ya tenia variso hoteles con false
+          if (hotel.availability === false) {
+            const availabilityResponse = await fetch(
+              `${BASE_URL}/availability/${formatDate(startDate)}/${formatDate(endDate)}/${selectedCity}`
+            );
+      
+            const isAvailable = await availabilityResponse.json();
+            console.log("Hotel Disponible: ", isAvailable);
+      
+            if (isAvailable) {
+              filteredHotels.push(hotel);
+            }
           }
-
         }
-        setHotelsShow(filteredHotels);
-        console.log(hotelsData);
       }
+      
+      setHotelsShow(filteredHotels);
+      console.log(filteredHotels);
+      
     } catch (error) {
       console.error("Error al obtener los hoteles o la disponibilidad:", error);
     }
@@ -105,8 +111,6 @@ const DatePicker = () => {
       window.M.Datepicker.getInstance(endPicker).destroy();
     };
   }, []);
-
-
 
   return (
     <div className="dateDiv">

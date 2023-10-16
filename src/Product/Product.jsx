@@ -5,16 +5,14 @@ import "./product.css";
 import { AuthContext } from "../Providers/AuthContextProvider";
 import Swal from "sweetalert2";
 
-const BOOKING_URL = `${BASE_URL}/booking`;
+//const BOOKING_URL = `${BASE_URL}/booking`;
 
 const Product = () => {
   const { user } = useContext(AuthContext);
   const [hotel, setHotel] = useState(null);
-  const [amenities, setAmenities] = useState([]);
-  const { id, startDate, endDate } = useParams();
+  const { id, startDate, endDate, city } = useParams();
   const [images, setImages] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const infoHotel = `${BASE_URL}/hotel/${id}`;
 
   const startDateBooking = new Date(startDate);
 
@@ -38,43 +36,18 @@ const Product = () => {
   )}/${String(dayEnd).padStart(2, "0")}`;
 
   const getHotel = async () => {
-    const response = await fetch(infoHotel);
+    console.log("ID:", id);
+    const response = await fetch(`${BASE_URL}/hotel/${id}`);
     const resolve = await response.json();
+    console.log(resolve);
     setHotel(resolve);
-  };
-
-  const getAmenities = async () => {
-    if (hotel && hotel.id) {
-      const response = await fetch(`${BASE_URL}/amenities/hotel/${hotel.id}`);
-      const resolve = await response.json();
-      if (resolve.amenities.name != "") {
-        setAmenities(resolve.amenities);
-      }
-    }
-  };
-
-  const getImagesByHotelId = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/image/hotel/${id}`);
-      const data = await response.json();
-      setImages(data.images);
-    } catch (error) {
-      console.error("Error al obtener las imágenes del hotel:", error);
-      Swal.fire({
-        text: "Error al obtener las imágenes del hotel",
-        icon: "error",
-        showClass: {
-          popup: "animate__animated animate__fadeInDown",
-        },
-      });
-    }
   };
 
   useEffect(() => {
     getHotel();
     if (user && (!startDate || !endDate)) {
       Swal.fire({
-        text: "Seleccione las fechas en la home",
+        text: "Seleccione los datos de busqueda para reservar en la Home",
         icon: "warning",
         showClass: {
           popup: "animate__animated animate__fadeInDown",
@@ -82,11 +55,6 @@ const Product = () => {
       });
     }
   }, []);
-
-  useEffect(() => {
-    getAmenities();
-    getImagesByHotelId();
-  }, [hotel]);
 
   const createBooking = async () => {
     const newBooking = {
@@ -179,16 +147,14 @@ const Product = () => {
           <p>No se encontraron imágenes para este producto.</p>
         )}
         <div className="details">
-          <h3>{hotel?.name}</h3>
+          <h3>Hotel: {hotel?.name}</h3>
           <p>Id: {hotel?.id}</p>
-          <p>Telefono: {hotel?.telephone}</p>
-          <p>Email: {hotel?.email}</p>
-          <p>Habitaciones disponibles: {hotel?.rooms}</p>
-          <p className="description">{hotel?.description}</p>
+          <p>Descripcion: {hotel?.description}</p>
+          <p>Disponibilidad: {hotel?.availability}</p>
           {user &&
             startDateBooking &&
             endDateBooking &&
-            hotel?.rooms > 0 && ( // Update the parentheses
+            city && ( // Update the parentheses
               <button className="bookingButton" onClick={createBooking}>
                 Reservar
               </button>
@@ -197,16 +163,7 @@ const Product = () => {
       </div>
       <h4>Amenities</h4>
       <div className="Amenities">
-        {amenities?.length ? (
-          amenities.map((amenitie) => (
-            <React.Fragment key={amenitie.id}>
-              <h5>{amenitie.name}</h5>
-              <p>{amenitie.description}</p>
-            </React.Fragment>
-          ))
-        ) : (
-          <p>El hotel no tiene amenities</p>
-        )}
+        <p>Aca es donde se insertarian los amenities</p>
       </div>
     </div>
   );
