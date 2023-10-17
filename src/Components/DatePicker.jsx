@@ -19,69 +19,7 @@ const DatePicker = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [hotelsShow, setHotelsShow] = useState([]);
-  const cities = ["Rio Cuarto", "city", "Carlos Paz"];
-
-  //console.log(startDate, endDate);
-
-  const handleSubmit = async () => {
-    try {
-      if (!selectedCity || !startDate || !endDate) {
-        Swal.fire({
-          title: "Error",
-          text: "Por favor, selecciona ciudad y ambas fechas",
-          icon: "error",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-        });
-        return;
-      }
-
-      if (startDate > endDate) {
-        Swal.fire({
-          title: "Error",
-          text: "Fechas no válidas",
-          icon: "error",
-          showClass: {
-            popup: "animate__animated animate__fadeInDown",
-          },
-        });
-        return;
-      }
-
-      const hotelsResponse = await fetch(`${BASE_URL}/hotels/${selectedCity}`);
-      const hotelsData = await hotelsResponse.json();
-      
-      const keys = Object.keys(hotelsData);
-      const filteredHotels = [];
-      
-      for (const key of keys) {
-        const hotelArray = hotelsData[key];
-        
-        for (const hotel of hotelArray) {
-          // Hay que cambiar de false a true, solo lo deje porque ya tenia variso hoteles con false
-          if (hotel.availability === false) {
-            const availabilityResponse = await fetch(
-              `${BASE_URL}/availability/${formatDate(startDate)}/${formatDate(endDate)}/${selectedCity}`
-            );
-      
-            const isAvailable = await availabilityResponse.json();
-            console.log("Hotel Disponible: ", isAvailable);
-      
-            if (isAvailable) {
-              filteredHotels.push(hotel);
-            }
-          }
-        }
-      }
-      
-      setHotelsShow(filteredHotels);
-      console.log(filteredHotels);
-      
-    } catch (error) {
-      console.error("Error al obtener los hoteles o la disponibilidad:", error);
-    }
-  };
+  const cities = ["Rio Cuarto", "city", "Carlos Paz", "cordoba"];
 
   useEffect(() => {
     const startPicker = document.querySelector(".start-datepicker");
@@ -112,6 +50,60 @@ const DatePicker = () => {
     };
   }, []);
 
+  // console.log(startDate, endDate);
+
+  const handleSubmit = async () => {
+    try {
+      if (!selectedCity || !startDate || !endDate) {
+        Swal.fire({
+          title: "Error",
+          text: "Por favor, selecciona ciudad y ambas fechas",
+          icon: "error",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        });
+        return;
+      }
+
+      if (startDate > endDate) {
+        Swal.fire({
+          title: "Error",
+          text: "Fechas no válidas",
+          icon: "error",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        });
+        return;
+      }
+
+      const formattedStartDate = formatDate(new Date(startDate));
+      const formattedEndDate = formatDate(new Date(endDate));
+
+      const hotelsResponse = await fetch(
+        `${BASE_URL}/availability/${formattedStartDate}/${formattedEndDate}/${selectedCity}`
+      );
+      const hotelsData = await hotelsResponse.json();
+
+      const keys = Object.keys(hotelsData);
+      const filteredHotels = [];
+
+      for (const key of keys) {
+        const hotelArray = hotelsData[key];
+
+        for (const hotel of hotelArray) {
+          // Hay que cambiar de false a true, solo lo deje porque ya tenia variso hoteles con false
+          filteredHotels.push(hotel);
+          // console.log("Hotel Disponible: ", hotel);
+        }
+      }
+      setHotelsShow(filteredHotels);
+    } catch (error) {
+      console.error("Error al obtener los hoteles o la disponibilidad:", error);
+    }
+  };
+
   return (
     <div className="dateDiv">
       <section className="datePicker">
@@ -127,16 +119,16 @@ const DatePicker = () => {
         <section className="citySelection">
           <label htmlFor="city">Ciudad</label>
           <select
-           id="city"
-           value={selectedCity}
-           className="browser-default"
-           onChange={(e) => setSelectedCity(e.target.value)}
+            id="city"
+            value={selectedCity}
+            className="browser-default"
+            onChange={(e) => setSelectedCity(e.target.value)}
           >
-          <option value=""></option>
+            <option value=""></option>
             {cities.map((city, index) => (
-             <option key={index} value={city}>
-               {city}
-             </option>
+              <option key={index} value={city}>
+                {city}
+              </option>
             ))}
           </select>
         </section>
@@ -155,9 +147,9 @@ const DatePicker = () => {
                 key={index}
                 hotelId={hotel.id}
                 name={hotel.name}
-                onClick={() =>
-                  navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)
-                }
+                onClick={() => {
+                  navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`);
+                }}
               />
             ))
           ) : (
@@ -166,7 +158,7 @@ const DatePicker = () => {
         </div>
       </div>
       <h2>Todos los hoteles:</h2>
-      <Hotels startDate={startDate} endDate={endDate} />
+      <Hotels/>
     </div>
   );
 };

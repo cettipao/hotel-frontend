@@ -5,15 +5,13 @@ import { BASE_URL } from "../configs";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-const infoHotel = `${BASE_URL}/hotel`;
-
-const Hotels = ({startDate, endDate}) => {
+const Hotels = () => {
   const navigate = useNavigate();
   const [hotels, setHotels] = useState([]);
 
     const getHotels = async () => {
         try {
-            const response = await fetch(infoHotel);
+            const response = await fetch(`${BASE_URL}/hotel`);
             const data = await response.json();
             setHotels(data.hotels);
         } catch (error) {
@@ -32,7 +30,7 @@ const Hotels = ({startDate, endDate}) => {
     getHotels();
   }, []);
 
-  console.log(hotels);
+  //console.log(hotels);
 
   return (
     <div className="SeccionHoteles">
@@ -43,7 +41,7 @@ const Hotels = ({startDate, endDate}) => {
               key={hotel.id}
               hotelId={hotel.id}
               name={hotel.name}
-              onClick={() => navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`)}
+              onClick={() => navigate(`/hotel/${hotel.id}`)}
             />
           ))
         ) : (

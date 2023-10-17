@@ -10,9 +10,9 @@ import Swal from "sweetalert2";
 const Product = () => {
   const { user } = useContext(AuthContext);
   const [hotel, setHotel] = useState(null);
-  const { id, startDate, endDate, city } = useParams();
-  const [images, setImages] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const { id, startDate, endDate, selectedCity } = useParams();
+  // const [images, setImages] = useState([]);
+  // const [activeIndex, setActiveIndex] = useState(0);
 
   const startDateBooking = new Date(startDate);
 
@@ -36,10 +36,8 @@ const Product = () => {
   )}/${String(dayEnd).padStart(2, "0")}`;
 
   const getHotel = async () => {
-    console.log("ID:", id);
     const response = await fetch(`${BASE_URL}/hotel/${id}`);
     const resolve = await response.json();
-    console.log(resolve);
     setHotel(resolve);
   };
 
@@ -47,12 +45,22 @@ const Product = () => {
     getHotel();
     if (user && (!startDate || !endDate)) {
       Swal.fire({
-        text: "Seleccione los datos de busqueda para reservar en la Home",
+        text: "Seleccione los datos de busqueda desde la Home para poder reservar ",
         icon: "warning",
         showClass: {
           popup: "animate__animated animate__fadeInDown",
         },
       });
+    } else {
+      if (!user) {
+        Swal.fire({
+          text: "Debes iniciar Sesion para poder Reservar",
+          icon: "warning",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        });
+      }
     }
   }, []);
 
@@ -106,18 +114,18 @@ const Product = () => {
     }
   };
 
-  const handleSlideChange = (direction) => {
-    const newIndex = (activeIndex + images.length + direction) % images.length;
-    setActiveIndex(newIndex);
-  };
+  // const handleSlideChange = (direction) => {
+  //   const newIndex = (activeIndex + images.length + direction) % images.length;
+  //   setActiveIndex(newIndex);
+  // };
 
-  const showArrows = images.length > 1;
+  // const showArrows = images.length > 1;
 
   return (
     <div className="detailsHotel">
-      <h1>Detalles del hotel seleccionado: </h1>
+      <h1>Detalles del hotel seleccionado </h1>
       <div className="detailEach">
-        {images.length > 0 ? (
+        {/* {images.length > 0 ? (
           <div className="arrows">
             {showArrows && (
               <button
@@ -145,25 +153,20 @@ const Product = () => {
           </div>
         ) : (
           <p>No se encontraron imágenes para este producto.</p>
-        )}
+        )} */}
         <div className="details">
           <h3>Hotel: {hotel?.name}</h3>
           <p>Id: {hotel?.id}</p>
+          <p>Ciudad: {hotel?.city}</p>
           <p>Descripcion: {hotel?.description}</p>
-          <p>Disponibilidad: {hotel?.availability}</p>
-          {user &&
-            startDateBooking &&
-            endDateBooking &&
-            city && ( // Update the parentheses
-              <button className="bookingButton" onClick={createBooking}>
-                Reservar
-              </button>
-            )}
+          <p>Amenities: {hotel?.amenities}</p>
+
+          {user && startDate && endDate /*&& selectedCity*/ && (
+            <button className="bookingButton" onClick={createBooking}>
+              Reservar
+            </button>
+          )}
         </div>
-      </div>
-      <h4>Amenities</h4>
-      <div className="Amenities">
-        <p>Aca es donde se insertarian los amenities</p>
       </div>
     </div>
   );
