@@ -148,7 +148,7 @@ const DatePicker = () => {
                 hotelId={hotel.id}
                 name={hotel.name}
                 onClick={() => {
-                  navigate(`/hotel/${hotel.id}/${startDate}/${endDate}`);
+                  navigate(`/hotel/${hotel.id}/${startDate}/${endDate}/${selectedCity}`);
                 }}
               />
             ))

@@ -52,7 +52,7 @@ export const navigation = [
   // },
   {
     id: 8,
-    path: "/hotel/:id/:startDate/:endDate",
+    path: "/hotel/:id/:startDate/:endDate/:selectedCity",
     Element: Product,
   },
 ];
