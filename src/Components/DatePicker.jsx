@@ -93,9 +93,10 @@ const DatePicker = () => {
         const hotelArray = hotelsData[key];
 
         for (const hotel of hotelArray) {
-          // Hay que cambiar de false a true, solo lo deje porque ya tenia variso hoteles con false
-          filteredHotels.push(hotel);
-          // console.log("Hotel Disponible: ", hotel);
+          if(hotel.availability === true){
+            filteredHotels.push(hotel);
+            // console.log("Hotel Disponible: ", hotel);
+          }
         }
       }
       setHotelsShow(filteredHotels);
