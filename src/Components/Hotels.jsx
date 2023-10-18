@@ -30,7 +30,7 @@ const Hotels = () => {
     getHotels();
   }, []);
 
-  //console.log(hotels);
+  console.log(hotels)
 
   return (
     <div className="SeccionHoteles">
@@ -40,6 +40,7 @@ const Hotels = () => {
             <Card
               key={hotel.id}
               hotelId={hotel.id}
+              images={hotel.images}
               name={hotel.name}
               onClick={() => navigate(`/hotel/${hotel.id}`)}
             />

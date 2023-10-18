@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import "./../Home/home.css";
-// import { BASE_URL } from "../configs";
+import { IMAGES_URL } from "../configs";
 // import Swal from "sweetalert2";
 // import { useNavigate } from "react-router-dom";
 
-const Card = ({ /*hotelId, */name, onClick }) => {
+const Card = ({name,images, onClick }) => {
   // const [images, setImages] = useState([]);
 
   // const getImagesByHotelId = async (hotelId) => {
@@ -28,11 +28,14 @@ const Card = ({ /*hotelId, */name, onClick }) => {
   //   getImagesByHotelId(hotelId);
   // }, [hotelId]);
 
-  // const imageUrl = images.length > 0 ? `${BASE_URL}/${images[0].url}` : "";
+
+  if (images!=undefined) {
+    var imageUrl = images.length > 0 ? `${IMAGES_URL}/${images[0]}` : "";
+  }
 
   return (
     <div className="eachCard" onClick={onClick}>
-      {/* {imageUrl && <img src={imageUrl} alt="hotel" />} */}
+      {{images} && <img src={imageUrl} alt="hotel" />}
       <h6 className="nombreHotel">{name}</h6>
     </div>
   );
