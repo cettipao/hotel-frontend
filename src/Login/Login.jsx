@@ -56,7 +56,7 @@ export function Login() {
           getUser().then(() => {
             // Luego, muestra el mensaje de bienvenida y navega al destino
             Swal.fire({
-              text: `Bienvenido `,
+              text: `¡Bienvenido!`,
               icon: "success",
               showClass: {
                 popup: "animate__animated animate__fadeInDown",
