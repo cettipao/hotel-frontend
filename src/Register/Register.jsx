@@ -8,10 +8,10 @@ import * as yup from "yup";
 
 export function Register() {
   const navigate = useNavigate();
-  const [name, setName] = useState("tomas");
-  const [lastName, setLastName] = useState("cassanelli");
-  const [email, setEmail] = useState("tomi@tomi.com");
-  const [password, setPassword] = useState("tomitomi");
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { handleRegister } = useContext(AuthContext);
 
   const validationSchema = yup.object().shape({
@@ -54,8 +54,8 @@ export function Register() {
       });
 
       // Validar el correo electrónico
-      const isPSTVEmail = email.endsWith("@pvpt.com");
-      const admin = isPSTVEmail ? 1 : 0; // Asignar el admin de administrador si es un correo de "@pvpt.com"
+      const isPVPTEmail = email.endsWith("@pvpt.com");
+      const admin = isPVPTEmail ? 1 : 0; // Asignar el admin de administrador si es un correo de "@pvpt.com"
       const isRegistered = await handleRegister(
         password,
         email,
