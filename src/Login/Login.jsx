@@ -7,8 +7,8 @@ import * as yup from "yup";
 
 export function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("t@t.com");
+  const [password, setPassword] = useState("t");
   const { handleLogin } = useContext(AuthContext);
   const { getUser } = useContext(AuthContext);
 

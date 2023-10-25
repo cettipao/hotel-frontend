@@ -8,10 +8,10 @@ import * as yup from "yup";
 
 export function Register() {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState("Juan");
+  const [lastName, setLastName] = useState("Juan");
+  const [email, setEmail] = useState("j@j.com");
+  const [password, setPassword] = useState("jjjjjjjj");
   const { handleRegister } = useContext(AuthContext);
 
   const validationSchema = yup.object().shape({

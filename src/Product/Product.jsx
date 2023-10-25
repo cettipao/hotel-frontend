@@ -1,18 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { LOGIN_URL, BASE_URL } from "../configs";
+import { LOGIN_URL, BASE_URL, IMAGES_URL } from "../configs";
 import "./product.css";
 import { AuthContext } from "../Providers/AuthContextProvider";
 import Swal from "sweetalert2";
-
-//const BOOKING_URL = `${BASE_URL}/booking`;
 
 const Product = () => {
   const { user } = useContext(AuthContext);
   const [hotel, setHotel] = useState(null);
   const { id, startDate, endDate, selectedCity } = useParams();
   // const [images, setImages] = useState([]);
-  // const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const startDateBooking = new Date(startDate);
 
@@ -85,51 +83,54 @@ const Product = () => {
         body: JSON.stringify(newBooking),
       });
   
-      // if (!createBookingResponse.ok) {
-      //   Swal.fire({
-      //     text: "Registro del booking no se ha podido realizar",
-      //     icon: "error",
-      //     showClass: {
-      //       popup: "animate__animated animate__fadeInDown",
-      //     },
-      //   });
-      //   throw new Error("Error al registrar el booking");
-      // }
+      if (!createBookingResponse.ok) {
+        Swal.fire({
+          text: "Registro del booking no se ha podido realizar",
+          icon: "error",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        });
+        throw new Error("Error al registrar el booking");
+      }
   
-      // Swal.fire({
-      //   text: "Registro del booking exitoso",
-      //   icon: "success",
-      //   showClass: {
-      //     popup: "animate__animated animate__fadeInDown",
-      //   },
-      // });
+      Swal.fire({
+        text: "Registro del booking exitoso",
+        icon: "success",
+        showClass: {
+          popup: "animate__animated animate__fadeInDown",
+        },
+      });
       console.log(newBooking);
   
       const createdBooking = await createBookingResponse.json();
       console.log(createdBooking);
     } catch (error) {
-      // Swal.fire({
-      //   text: "Ocurrió un error al realizar la reserva",
-      //   icon: "error",
-      //   showClass: {
-      //     popup: "animate__animated animate__fadeInDown",
-      //   },
-      // });
+      Swal.fire({
+        text: "Ocurrió un error al realizar la reserva",
+        icon: "error",
+        showClass: {
+          popup: "animate__animated animate__fadeInDown",
+        },
+      });
       console.log(error);
     }
   };
-  // const handleSlideChange = (direction) => {
-  //   const newIndex = (activeIndex + images.length + direction) % images.length;
-  //   setActiveIndex(newIndex);
-  // };
 
-  // const showArrows = images.length > 1;
-
+  const handleSlideChange = (direction) => {
+    if (hotel && hotel.images) {
+      const newIndex = (activeIndex + hotel?.images?.length + direction) % hotel?.images?.length;
+      setActiveIndex(newIndex);
+    }
+  };
+  
+  const showArrows = hotel?.images?.length > 1;
+  
   return (
     <div className="detailsHotel">
-      <h1>Detalles del hotel seleccionado </h1>
+      <h1>Detalles del hotel seleccionado</h1>
       <div className="detailEach">
-        {/* {images.length > 0 ? (
+        {hotel?.images?.length > 0 ? (
           <div className="arrows">
             {showArrows && (
               <button
@@ -140,15 +141,13 @@ const Product = () => {
               </button>
             )}
             <img
-              src={`${BASE_URL}/${images[activeIndex]?.url}`}
+              src={`${IMAGES_URL}/${hotel?.images[activeIndex]}`}
               alt="Imagen del producto"
               className="hotelImage"
             />
             {showArrows && (
               <button
-                className={`next-arrow ${
-                  activeIndex === images.length - 1 ? "hidden" : ""
-                }`}
+                className={`next-arrow ${activeIndex === hotel?.images?.length - 1 ? "hidden" : ""}`}
                 onClick={() => handleSlideChange(1)}
               >
                 &gt;
@@ -157,14 +156,14 @@ const Product = () => {
           </div>
         ) : (
           <p>No se encontraron imágenes para este producto.</p>
-        )} */}
+        )}
         <div className="details">
           <h3>Hotel: {hotel?.name}</h3>
           <p>Id: {hotel?.id}</p>
           <p>Ciudad: {hotel?.city}</p>
           <p>Descripcion: {hotel?.description}</p>
           <p>Amenities: {hotel?.amenities}</p>
-
+  
           {user && startDate && endDate /*&& selectedCity */&& (
             <button className="bookingButton" onClick={createBooking}>
               Reservar

@@ -143,10 +143,11 @@ const DatePicker = () => {
         <h2>Hoteles en las fechas seleccionadas:</h2>
         <div className="HotelCard">
           {hotelsShow.length ? (
-            hotelsShow.map((hotel, index) => (
+            hotelsShow.map((hotel) => (
               <Card
-                key={index}
+                key={hotel.id}
                 hotelId={hotel.id}
+                images={hotel.images}
                 name={hotel.name}
                 onClick={() => {
                   navigate(`/hotel/${hotel.id}/${startDate}/${endDate}/${selectedCity}`);

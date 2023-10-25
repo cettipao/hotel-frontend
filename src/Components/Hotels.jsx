@@ -30,8 +30,6 @@ const Hotels = () => {
     getHotels();
   }, []);
 
-  console.log(hotels)
-
   return (
     <div className="SeccionHoteles">
       <div className="HotelCard">
