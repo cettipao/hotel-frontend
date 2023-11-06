@@ -19,7 +19,7 @@ const DatePicker = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [hotelsShow, setHotelsShow] = useState([]);
-  const cities = ["Rio Cuarto", "city", "Carlos Paz", "cordoba"];
+  const cities = ["city", "city2", "city3"];
 
   useEffect(() => {
     const startPicker = document.querySelector(".start-datepicker");
@@ -58,6 +58,22 @@ const DatePicker = () => {
         Swal.fire({
           title: "Error",
           text: "Por favor, selecciona ciudad y ambas fechas",
+          icon: "error",
+          showClass: {
+            popup: "animate__animated animate__fadeInDown",
+          },
+        });
+        return;
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set the time to the start of today
+      const selectedStartDate = new Date(startDate);
+
+      if (selectedStartDate < today) {
+        Swal.fire({
+          title: "Error",
+          text: "La fecha de inicio no puede ser anterior a hoy",
           icon: "error",
           showClass: {
             popup: "animate__animated animate__fadeInDown",

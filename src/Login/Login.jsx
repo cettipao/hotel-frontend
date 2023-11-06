@@ -7,8 +7,8 @@ import * as yup from "yup";
 
 export function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("t@t.com");
-  const [password, setPassword] = useState("t");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { handleLogin } = useContext(AuthContext);
   const { getUser } = useContext(AuthContext);
 
@@ -96,6 +96,8 @@ export function Login() {
         display: "flex",
         flexDirection: "column",
         gap: "20px",
+        marginLeft: "60px", 
+        marginRight: "60px", 
       }}
     >
       <Typography variant="h2">Iniciar Sesión</Typography>

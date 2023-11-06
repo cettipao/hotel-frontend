@@ -162,7 +162,7 @@ const Product = () => {
           <p>Id: {hotel?.id}</p>
           <p>Ciudad: {hotel?.city}</p>
           <p>Descripcion: {hotel?.description}</p>
-          <p>Amenities: {hotel?.amenities}</p>
+          <p>Amenities: {hotel?.amenities?.join(', ')}</p>
   
           {user && startDate && endDate /*&& selectedCity */&& (
             <button className="bookingButton" onClick={createBooking}>
