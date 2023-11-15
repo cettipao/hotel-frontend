@@ -6,6 +6,8 @@ import { Register } from "../Register/Register";
 const Home = lazy(() => import("../Home/Home"));
 const Product = lazy(() => import("../Product/Product"));
 const Booking = lazy(() => import("../Booking/Booking"));
+const Containers = lazy(() => import("../DockerContainers/Containers"));
+const ContainerDetails = lazy(() => import("../DockerContainers/ContainerDetails"));
 // const Perfil = lazy(() => import("../Perfil/Perfil"));
 // const AdminUser = lazy(() => import("../AdminUser/AdminUser"));
 
@@ -54,5 +56,15 @@ export const navigation = [
     id: 8,
     path: "/hotel/:id/:startDate/:endDate/:selectedCity",
     Element: Product,
+  },
+  {
+    id: 9,
+    path: "/cointainer",
+    Element: Containers,
+  },
+  {
+    id: 10,
+    path: "/container-details/:id",
+    Element: ContainerDetails,
   },
 ];
