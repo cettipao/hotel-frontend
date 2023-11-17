@@ -10,25 +10,27 @@ const Containers = () => {
   const [containers, setContainers] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedContainerType, setSelectedContainerType] = useState('');
-  const [searchContainerType, setSearchContainerType] = useState('all');
+  const [searchContainerType, setSearchContainerType] = useState('');
   const [deleteContainerType, setDeleteContainerType] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchContainers = async () => {
-      try {
-        let url = `${CONTAINERS_URL}/container`;
-        if (searchContainerType !== 'all') {
-          url = `${CONTAINERS_URL}/container/${searchContainerType}`;
-        }
-
-        const response = await fetch(url);
-        const data = await response.json();
-        setContainers(data);
-      } catch (error) {
-        console.error('Error al obtener los contenedores: ', error);
+  const fetchContainers = async () => {
+    try {
+      let url = `${CONTAINERS_URL}/container`;
+      if (searchContainerType !== '') {
+        url = `${CONTAINERS_URL}/container/${searchContainerType}`;
       }
-    };
+
+      const response = await fetch(url);
+      const data = await response.json();
+      setContainers(data);
+    } catch (error) {
+      console.error('Error al obtener los contenedores: ', error);
+    }
+    //setTimeout(fetchContainers, 5000);
+  };
+
+  useEffect(() => {
 
     fetchContainers();
   }, [searchContainerType]);
@@ -74,17 +76,34 @@ const Containers = () => {
 
   const handleDeleteContainer = async () => {
     try {
-      await fetch(`${CONTAINERS_URL}/container/${deleteContainerType}`, {
+      if (!deleteContainerType) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Por favor, selecciona un tipo de contenedor',
+        });
+        return;
+      }
+      const response = await fetch(`${CONTAINERS_URL}/container/${deleteContainerType}`, {
         method: 'DELETE',
       });
-      Swal.fire({
-        icon: 'success',
-        title: 'Contenedor eliminado',
-        text: 'El contenedor se ha eliminado con éxito.',
-      });
-      fetchContainers();
-      navigate('/containers');
-
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Contenedor eliminado',
+          text: 'El contenedor se ha eliminado con éxito.',
+        });
+        fetchContainers();
+        navigate('/containers');
+      } else {
+        const responseData = await response.json(); 
+        const message = responseData.error.message; 
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: message,
+        });
+      }
     } catch (error) {
       console.error('Error al eliminar el contenedor: ', error);
     }
@@ -99,10 +118,9 @@ const Containers = () => {
           id="searchContainerType"
           value={searchContainerType}
           onChange={(e) => setSearchContainerType(e.target.value)}
-          defaultValue="all"
           style={{ width: 'auto', padding: '8px', margin: '5px', display: 'inline-block' }}
         >
-          <option value="all">Mostrar todos</option>
+          <option value="">Mostrar todos</option>
           <option value="hotel-api">Hotel API</option>
           <option value="search-api">Search API</option>
           <option value="user-res-api">User Reservation API</option>
@@ -116,6 +134,9 @@ const Containers = () => {
           onChange={(e) => setDeleteContainerType(e.target.value)}
           style={{ width: 'auto', padding: '8px', margin: '5px', display: 'inline-block' }}
         >
+          <option value="" disabled>
+              Selecciona un tipo
+            </option>
           <option value="hotel-api">Hotel API</option>
           <option value="search-api">Search API</option>
           <option value="user-res-api">User Reservation API</option>
