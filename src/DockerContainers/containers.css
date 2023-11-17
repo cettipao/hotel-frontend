@@ -1,0 +1,42 @@
+/* Agrega este estilo para los contenedores con puntas ovaladas, color blanco grisaseo y sombra leve */
+.container-card {
+    background-color: #f2f2f2; /* Color blanco grisaseo */
+    border-radius: 15px; /* Puntas ovaladas */
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    margin: 10px; /* Espaciado entre contenedores */
+    padding: 15px; /* Espaciado interno */
+  }
+  
+  /* Estilo para el botón de buscar */
+  button {
+    background-color: #3498db; /* Color azul */
+    color: #fff; /* Color blanco para el texto */
+    padding: 10px 15px; /* Espaciado interno del botón */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer;
+  }
+  
+  /* Estilo para el contenedor de la lista de contenedores */
+  .container-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  /* Estilo para el título h2 */
+  h2 {
+    color: #333; /* Color de texto oscuro */
+  }
+  
+  /* Estilo para el enlace dentro de los contenedores */
+  .container-card a {
+    text-decoration: none; /* Sin subrayado */
+    color: #333; /* Color de texto oscuro */
+  }
+  
+  /* Estilo para el enlace activo */
+  .container-card a:hover {
+    color: #3498db; /* Color azul al pasar el ratón */
+  }
+  
