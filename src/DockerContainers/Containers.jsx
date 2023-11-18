@@ -1,39 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import "./containers.css";
 import { CONTAINERS_URL } from "../configs";
+import "./containers.css";
 
 const Containers = () => {
   const [containers, setContainers] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedContainerType, setSelectedContainerType] = useState('');
-  const [searchContainerType, setSearchContainerType] = useState('');
   const [deleteContainerType, setDeleteContainerType] = useState('');
+  const [selectedContainerType, setSelectedContainerType] = useState('');
   const navigate = useNavigate();
 
   const fetchContainers = async () => {
     try {
-      let url = `${CONTAINERS_URL}/container`;
-      if (searchContainerType !== '') {
-        url = `${CONTAINERS_URL}/container/${searchContainerType}`;
-      }
-
-      const response = await fetch(url);
+      const response = await fetch(`${CONTAINERS_URL}/container`);
       const data = await response.json();
       setContainers(data);
     } catch (error) {
       console.error('Error al obtener los contenedores: ', error);
     }
-    //setTimeout(fetchContainers, 5000);
+    setTimeout(fetchContainers, 5000);
   };
 
   useEffect(() => {
-
     fetchContainers();
-  }, [searchContainerType]);
+  }, []);
+
+  const groupContainersByImageType = (containers) => {
+    const groupedContainers = {};
+
+    containers.forEach((container) => {
+      const imageType = container.image;
+      if (!groupedContainers[imageType]) {
+        groupedContainers[imageType] = [];
+      }
+      groupedContainers[imageType].push(container);
+    });
+
+    return groupedContainers;
+  };
+
+  const renderContainersByImageType = (containers) => {
+    const groupedContainers = groupContainersByImageType(containers);
+
+    return Object.keys(groupedContainers).map((imageType) => (
+      <div key={imageType} className="column">
+        {groupedContainers[imageType].map((container) => (
+          <div key={container.id} className="container-card">
+            <h4>{container.name}</h4>
+            <ul>
+              <li>Image: {container.image}</li>
+              <li>Status: {container.status}</li>
+              <li>State: {container.state}</li>
+              <li>Port: {container.port}</li>
+              <li>IP: {container.ip}</li>
+            </ul>
+          </div>
+        ))}
+      </div>
+    ));
+  };
 
   const handleCreateContainer = async () => {
     try {
@@ -45,7 +70,7 @@ const Containers = () => {
         });
         return;
       }
-  
+
       await fetch(`${CONTAINERS_URL}/container/${selectedContainerType}`, {
         method: 'POST',
         headers: {
@@ -54,16 +79,16 @@ const Containers = () => {
         body: JSON.stringify({
         }),
       });
-  
+
       Swal.fire({
         icon: 'success',
         title: 'Éxito',
         text: 'Contenedor creado con éxito',
       });
-  
+
       fetchContainers();
       navigate('/containers');
-  
+
     } catch (error) {
       console.error('Error al crear el contenedor: ', error);
       Swal.fire({
@@ -84,9 +109,11 @@ const Containers = () => {
         });
         return;
       }
+
       const response = await fetch(`${CONTAINERS_URL}/container/${deleteContainerType}`, {
         method: 'DELETE',
       });
+
       if (response.ok) {
         Swal.fire({
           icon: 'success',
@@ -96,8 +123,8 @@ const Containers = () => {
         fetchContainers();
         navigate('/containers');
       } else {
-        const responseData = await response.json(); 
-        const message = responseData.error.message; 
+        const responseData = await response.json();
+        const message = responseData.error.message;
         Swal.fire({
           icon: 'error',
           title: 'Error',
@@ -112,20 +139,25 @@ const Containers = () => {
   return (
     <div>
       <h2>Contenedores de Docker</h2>
+
       <div>
-        <label htmlFor="searchContainerType">Selecciona un tipo de contenedor para buscar:</label>
+        <label htmlFor="containerType">Selecciona un tipo de contenedor a crear:</label>
         <select
-          id="searchContainerType"
-          value={searchContainerType}
-          onChange={(e) => setSearchContainerType(e.target.value)}
+          id="containerType"
+          value={selectedContainerType}
+          onChange={(e) => setSelectedContainerType(e.target.value)}
           style={{ width: 'auto', padding: '8px', margin: '5px', display: 'inline-block' }}
         >
-          <option value="">Mostrar todos</option>
+          <option value="" disabled>
+            Selecciona un tipo
+          </option>
           <option value="hotel-api">Hotel API</option>
           <option value="search-api">Search API</option>
           <option value="user-res-api">User Reservation API</option>
-          </select>
+        </select>
+        <button onClick={handleCreateContainer}>Crear Contenedor</button>
       </div>
+
       <div>
         <label htmlFor="DeleteContainerType">Selecciona un tipo de contenedor para borrar:</label>
         <select
@@ -135,48 +167,18 @@ const Containers = () => {
           style={{ width: 'auto', padding: '8px', margin: '5px', display: 'inline-block' }}
         >
           <option value="" disabled>
-              Selecciona un tipo
-            </option>
+            Selecciona un tipo
+          </option>
           <option value="hotel-api">Hotel API</option>
           <option value="search-api">Search API</option>
           <option value="user-res-api">User Reservation API</option>
-          </select>
-          <button onClick={handleDeleteContainer}>Borrar Contenedor</button>
+        </select>
+        <button onClick={handleDeleteContainer}>Borrar Contenedor</button>
       </div>
-      <button onClick={() => setShowDropdown(true)}>
-        <FontAwesomeIcon icon={faPlus} style={{ marginLeft: '10px', cursor: 'pointer' }} />
-      </button>
-      {showDropdown && (
-        <div>
-          <label htmlFor="containerType">Selecciona un tipo de contenedor:</label>
-          <select
-            id="containerType"
-            value={selectedContainerType}
-            onChange={(e) => setSelectedContainerType(e.target.value)}
-            style={{ width: 'auto', padding: '8px', margin: '5px', display: 'inline-block' }}
-          >
-            <option value="" disabled>
-              Selecciona un tipo
-            </option>
-            <option value="hotel-api">Hotel API</option>
-            <option value="search-api">Search API</option>
-            <option value="user-res-api">User Reservation API</option>
-          </select>
-          <button onClick={handleCreateContainer}>Crear Contenedor</button>
-        </div>
-      )}
+
       <div className="container-grid">
-        {Array.isArray(containers.containers) ? (
-          containers.containers.map((container) => (
-            <div key={container.id} className="container-card">
-              <h3>{container.name}</h3>
-              <p>Image: {container.image}</p>
-              <p>Status: {container.status}</p>
-              <p>State: {container.state}</p>
-              <p>Port: {container.port}</p>
-              <p>IP: {container.ip}</p>
-            </div>
-          ))
+        {Array.isArray(containers.containers) && containers.containers.length > 0 ? (
+          renderContainersByImageType(containers.containers)
         ) : (
           <p>No hay contenedores disponibles.</p>
         )}
